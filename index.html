@@ -376,12 +376,41 @@
   }
   .navbtn{
     flex:1; background:none; border:none; color:var(--text-muted);
-    display:flex; flex-direction:column; align-items:center; gap:3px;
-    padding:8px 2px; font-family:var(--sans); font-size:10px; font-weight:600;
+    display:flex; flex-direction:column; align-items:center; gap:2px;
+    padding:7px 1px; font-family:var(--sans); font-size:9px; font-weight:600;
     cursor:pointer; border-radius:10px;
   }
   .navbtn.active{ color:var(--accent); }
-  .navbtn svg{ width:20px; height:20px; }
+  .navbtn svg{ width:18px; height:18px; }
+
+  /* ---------- FOTO TAB ---------- */
+  .city-block{ margin-bottom: 8px; }
+  .city-block-title{
+    font-size:16px; font-weight:800; margin: 24px 0 4px;
+    display:flex; align-items:center; gap:8px;
+  }
+  .city-block-title:first-child{ margin-top:6px; }
+  .subgroup-label{
+    font-family:var(--mono); font-size:10.5px; text-transform:uppercase; letter-spacing:.1em;
+    color:var(--text-muted); margin: 14px 0 8px;
+  }
+  .photo-card{
+    background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:13px 15px; margin-bottom:9px;
+  }
+  .photo-card-top{ display:flex; justify-content:space-between; align-items:flex-start; gap:10px; }
+  .photo-card-name{ font-weight:700; font-size:13.5px; line-height:1.3; }
+  .status-badge{
+    font-family:var(--mono); font-size:9.5px; padding:3px 8px; border-radius:5px;
+    white-space:nowrap; flex-shrink:0; margin-top:1px;
+  }
+  .status-badge.in{ background: rgba(227,167,46,0.18); color: var(--accent-soft); }
+  .status-badge.out{ background: rgba(159,179,168,0.12); color: var(--text-muted); border:1px solid var(--border); }
+  .status-badge.local{ background: rgba(159,179,168,0.18); color: #cfe0d8; border:1px solid rgba(159,179,168,0.35); }
+  .photo-card-addr{
+    font-family:var(--mono); font-size:11px; color:var(--accent-soft); margin-top:6px; line-height:1.4;
+  }
+  .photo-card-note{ font-size:12px; color:var(--text-muted); margin-top:6px; line-height:1.5; }
 
   @media (min-width: 640px){
     h1.title{ font-size: 34px; }
@@ -448,6 +477,11 @@
     </div>
   </div>
 
+  <!-- FOTO -->
+  <div class="panel" id="panel-foto">
+    <div id="fotoList"></div>
+  </div>
+
   <!-- NOTE -->
   <div class="panel" id="panel-note">
     <div class="section-title">Note pratiche</div>
@@ -473,6 +507,10 @@
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="9" cy="9" r="5"/><circle cx="15" cy="15" r="5"/></svg>
     Cambio
   </button>
+  <button class="navbtn" data-tab="foto">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="6" width="18" height="14" rx="2"/><circle cx="12" cy="13" r="3.5"/><path d="M9 6l1.5-2h3L15 6"/></svg>
+    Foto
+  </button>
   <button class="navbtn" data-tab="note">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 3h9l3 3v15H6z"/><path d="M9 8h6M9 12h6M9 16h4"/></svg>
     Note
@@ -489,11 +527,20 @@ const DAYS = [
   {n:2, date:"2026-08-06", label:"Gio 6 ago", loc:"Kuala Lumpur", stop:"kl1",
    program:"8:00 partenza per Batu Caves (LRT diretta da KLCC, ~30 min): 272 gradini colorati, tempio hindu, statua dorata di Murugan. Rientro verso mezzogiorno, pranzo in zona KLCC/Bukit Bintang. Pomeriggio: Petronas Towers (skybridge + observation deck) e KLCC Park di giorno.",
    exp:"Prenotare i biglietti Petronas online con giorni d'anticipo. Batu Caves si visita in autonomia, 2-3 ore.",
-   transport:"LRT diretta KLCC–Batu Caves; Grab per il resto."},
+   transport:"LRT diretta KLCC–Batu Caves; Grab per il resto.",
+   nearby:[
+     {name:"Merdeka 118 observation deck", included:false, note:"~15 min da KLCC: vista alternativa, con le Petronas stesse nell'inquadratura."},
+     {name:"KL Tower Sky Deck / SkyBar / Heli Lounge Bar", included:false, note:"Per la sera libera, se non siete troppo stanchi dopo Batu Caves."},
+   ]},
   {n:3, date:"2026-08-07", label:"Ven 7 ago", loc:"Kuala Lumpur", stop:"kl1",
    program:"Mattina: Kampung Baru (villaggio malese tra i grattacieli), Pasar Seni, Chinatown/Petaling Street. Pomeriggio: Brickfields (Little India). Sera: tour street food a Jalan Alor.",
    exp:"'Local Street Food Night Tour' (~2.5h) o 'Sambal Streets Food Tour' (15+ assaggi) su GetYourGuide.",
-   transport:"A piedi nel centro storico + Grab/LRT tra zone."},
+   transport:"A piedi nel centro storico + Grab/LRT tra zone.",
+   nearby:[
+     {name:"Merdeka Square + Masjid Negara + Islamic Arts Museum", included:false, note:"Proprio accanto a Pasar Seni/Chinatown: stesso giro a piedi della mattina."},
+     {name:"Chow Kit Market", included:false, note:"Vicino a Kampung Baru, stessa zona in cui siete già la mattina."},
+     {name:"REXKL", included:false, note:"A due passi da Chinatown/Petaling Street."},
+   ]},
   {n:4, date:"2026-08-08", label:"Sab 8 ago", loc:"Taman Negara (gita di un giorno)", stop:"tn",
    program:"Pick-up 5:30-6:00 dall'hotel. Giornata al parco: trekking a Bukit Teresek, canopy walkway, rapid shooting in barca, villaggio Orang Asli, pranzo incluso. Rientro a KL in serata (18:00-20:00).",
    exp:"Tour di un giorno con guida naturalistica inclusa — dettagli nella scheda Trasferimenti.",
@@ -501,21 +548,31 @@ const DAYS = [
   {n:5, date:"2026-08-09", label:"Dom 9 ago", loc:"Kuala Lumpur", stop:"kl1",
    program:"Giornata di recupero dopo la lunga escursione. Mattina libera/shopping (Pavilion, Bukit Bintang, Suria KLCC). Sera: escursione alle lucciole di Kuala Selangor.",
    exp:"Tour serale 'Kuala Selangor Fireflies & Mangrove' — lucciole sincronizzate sulle mangrovie, ~1-1.5h da KL.",
-   transport:"Grab/LRT in città; il tour lucciole include pick-up e drop-off."},
+   transport:"Grab/LRT in città; il tour lucciole include pick-up e drop-off.",
+   nearby:[
+     {name:"Thean Hou Temple, KL Bird Park, Royal Selangor Visitor Centre", included:false, note:"Buone opzioni per la mattinata libera di oggi, se preferite qualcosa di più che shopping."},
+   ]},
   {n:6, date:"2026-08-10", label:"Lun 10 ago", loc:"Kuala Lumpur → Cameron Highlands", stop:"ch",
    program:"Check-out e bus/transfer diretto verso Tanah Rata. Check-in Blue Jade Studios nel pomeriggio. Sera: passeggiata a Tanah Rata, prima cena 'di montagna'.",
    exp:"", transport:"Bus diretto da TBS (4-5h) o transfer privato (~4h)."},
   {n:7, date:"2026-08-11", label:"Mar 11 ago", loc:"Cameron Highlands", stop:"ch",
    program:"BOH Tea Plantation, Mossy Forest (meglio presto al mattino), fattoria di fragole. Pomeriggio facoltativo: Jungle Trail No. 1 verso Gunung Brinchang.",
    exp:"'Mossy Forest & Tea Plantation Tour' (mezza giornata, 4x4 Land Rover, hotel pick-up) su GetYourGuide.",
-   transport:"Niente Grab: tour/jeep condivisi (RM 25-30) o taxi locali con prezzo concordato prima."},
+   transport:"Niente Grab: tour/jeep condivisi (RM 25-30) o taxi locali con prezzo concordato prima.",
+   nearby:[
+     {name:"Viewpoint dell'alba a Gunung Brinchang", included:false, note:"Il tour standard copre la Mossy Forest ma parte più tardi del sorgere del sole: per il vero scatto d'alba serve un transfer autonomo alle 5:30-6:00, da chiedere in hotel."},
+     {name:"Bharat Tea Plantation", included:false, note:"Alternativa meno turistica al BOH, se avete tempo extra."},
+   ]},
   {n:8, date:"2026-08-12", label:"Mer 12 ago", loc:"Cameron Highlands → George Town", stop:"pg",
    program:"Mattina: mercato di Tanah Rata o seconda passeggiata tra le piantagioni. Check-out e bus verso Sungai Nibong. Arrivo a George Town in serata, check-in Citadines Connect. Cena a Chulia Street.",
    exp:"", transport:"Bus diretto (4-5h) + Grab/bus locale fino al centro."},
   {n:9, date:"2026-08-13", label:"Gio 13 ago", loc:"George Town, Penang", stop:"pg",
    program:"Street art tour a piedi, Fort Cornwallis, Kapitan Keling Mosque, Goddess of Mercy Temple. Sera: cena a Chew Jetty tra le case su palafitte della comunità Hokkien.",
    exp:"Giro in trishaw (RM 40/30min, RM 80/1h) o tour 'Heritage Highlights + Trishaw Ride' (~3h) su GetYourGuide.",
-   transport:"A piedi nel centro storico."},
+   transport:"A piedi nel centro storico.",
+   nearby:[
+     {name:"The TOP Penang — Rainbow Skywalk", included:false, note:"Al Komtar Tower, zona centrale di George Town: si può inserire nel giro di oggi o di domani, magari al tramonto."},
+   ]},
   {n:10, date:"2026-08-14", label:"Ven 14 ago", loc:"George Town, Penang", stop:"pg",
    program:"Mattina: Clan Jetties con calma, Little India. Pomeriggio libero: Penang Hill (funicolare) o Batu Ferringhi per il mare.",
    exp:"'Heritage Walking Tour with Street Food Tasting' su GetYourGuide.",
@@ -675,6 +732,23 @@ function jumpToStop(stopId){
 }
 
 /* ============================= RENDER: OGGI ============================= */
+function renderNearbyBlock(nearby, compact){
+  if(!nearby || !nearby.length) return '';
+  const label = compact ? 'today-item-label' : 'body-label';
+  const text = compact ? 'today-item-text' : 'body-text';
+  const wrap = compact ? '' : 'body-block';
+  return `<div class="${wrap}">
+    <div class="${label}">📍 Nelle vicinanze</div>
+    ${nearby.map(nb => `
+      <div style="margin-top:6px;">
+        <span class="status-badge ${nb.included ? 'in':'out'}" style="margin-right:6px;">${nb.included ? 'nel giro' : 'da valutare'}</span>
+        <b>${nb.name}</b>
+        <div class="${text}" style="margin-top:2px;">${nb.note}</div>
+      </div>
+    `).join('')}
+  </div>`;
+}
+
 function renderOggi(){
   const panel = document.getElementById('panel-oggi');
   const t = findTodayDay();
@@ -705,6 +779,7 @@ function renderOggi(){
           <div class="today-item-label">Trasporto locale</div>
           <div class="today-item-text">${t.transport}</div>
         </div>
+        ${t.nearby ? `<div>${renderNearbyBlock(t.nearby, true)}</div>` : ''}
       </div>
       <label class="done-toggle">
         <input type="checkbox" ${completed.includes(t.n)?'checked':''} onchange="toggleDay(${t.n})">
@@ -743,6 +818,7 @@ function renderDays(){
           <div class="body-label">Trasporto locale</div>
           <div class="body-text">${d.transport}</div>
         </div>
+        ${renderNearbyBlock(d.nearby, false)}
         <label class="done-toggle">
           <input type="checkbox" ${isDone?'checked':''} onchange="toggleDay(${d.n})">
           Fatto
@@ -821,6 +897,98 @@ function updateFromEUR(){
   document.getElementById('rmInput').value = (eur / RATE_RM_TO_EUR).toFixed(2);
 }
 
+/* ============================= FOTO DATA ============================= */
+const PHOTO = [
+  { city:"Kuala Lumpur",
+    viewpoints:[
+      {name:"KLCC Park — Symphony Lake (riflesso Petronas)", addr:"Dentro KLCC Park, lato Suria KLCC — 5 min a piedi da Eaton Residence KLCC", note:"Gratuito, sempre aperto. Meglio blue hour (poco dopo il tramonto).", included:true},
+      {name:"Heli Lounge Bar (rooftop su elipad, senza vetri)", addr:"34° piano, Menara KH, Jalan Sultan Ismail, 50250 KL — LRT Raja Chulan o Bukit Bintang + 5 min a piedi", note:"Consumazione minima ~RM 50/persona. Aperto dalle 17:00.", included:false},
+      {name:"SkyBar, Traders Hotel (vista frontale sulle torri)", addr:"Livello 33, Traders Hotel, Jalan Pinang, KLCC, 50088 KL — 10 min a piedi da Eaton Residence", note:"Consumazione minima ~RM 200 per il tavolo a vetrata.", included:false},
+      {name:"KL Tower Sky Deck", addr:"No. 2 Jalan Punchak (off Jalan P. Ramlee), 50250 KL — LRT Dang Wangi o Monorail Bukit Nanas", note:"Slot al tramonto consigliato: si esaurisce, prenotare online.", included:false},
+      {name:"Kampung Baru (scorcio vecchio/nuovo)", addr:"Zona Jalan Raja Muda Musa — LRT Kampung Baru (linea Kelana Jaya)", note:"Punto più fotografato: ponte pedonale con le Petronas alle spalle delle case tradizionali.", included:true},
+      {name:"Bukit Tunku Viewpoint", addr:"Taman Duta, vicino Jalan Tunku Putra — solo con Grab/auto, 5-6 posti auto disponibili", note:"Spot locale, non turistico. Vista quasi senza ostacoli sullo skyline ovest, proprio fuori dalla residenza ufficiale del sindaco di KL — comportatevi con discrezione. Ideale al tramonto.", included:false, local:true},
+      {name:"Jalan Tunku Putra", addr:"Taman Duta, vicino Bukit Tunku (Kenny Hills) — solo con Grab/auto", note:"Spot locale, soprannominata dai KLites \"la strada più bella di KL\": alberi che incorniciano lo skyline sullo sfondo. Zero turisti, solo residenti e fotografi locali.", included:false, local:true},
+      {name:"Ampang Lookout Point", addr:"Bukit Ampang, Jalan Ampang-Hulu Langat — LRT Cempaka + Grab per l'ultimo tratto", note:"Spot locale sulla collina di Ampang, vista su Petronas, KL Tower e Merdeka 118. Le fonti sono contrastanti sulla presenza di bancarelle di street food: portatevi comunque qualcosa da bere/mangiare per sicurezza. Meglio di sera per lo skyline illuminato; occhio a zanzare e illuminazione stradale scarsa.", included:false, local:true},
+    ],
+    extras:[
+      {name:"Merdeka Square (Dataran Merdeka)", note:"Piazza storica dell'indipendenza, architettura coloniale.", included:false},
+      {name:"Masjid Negara (Moschea Nazionale)", note:"Visitabile anche da non musulmani in orari specifici.", included:false},
+      {name:"Islamic Arts Museum Malaysia", note:"Accanto alla Moschea Nazionale.", included:false},
+      {name:"Central Market (Pasar Seni)", note:"Artigianato, souvenir, batik.", included:true},
+      {name:"KL Bird Park", note:"Una delle voliere a cielo libero più grandi al mondo, nel Perdana Botanical Garden.", included:false},
+      {name:"Thean Hou Temple", note:"Grande tempio cinese su una collina, colorato e scenografico.", included:false},
+      {name:"Merdeka 118", note:"Grattacielo più nuovo di KL (2° più alto al mondo), con proprio observation deck.", included:false},
+      {name:"Royal Selangor Visitor Centre", note:"Tour gratuito della fabbrica di peltro più famosa di Malesia.", included:false},
+      {name:"REXKL", note:"Ex cinema storico riconvertito in spazio culturale, libreria indipendente, caffetterie.", included:false},
+      {name:"Chow Kit Market", note:"Wet market autentico, lontano dai circuiti turistici.", included:false},
+    ]
+  },
+  { city:"Taman Negara",
+    viewpoints:[
+      {name:"Canopy walkway al tramonto", addr:"Dentro il parco, ingresso da Kuala Tahan", note:"Luce che filtra tra le chiome, ottimo anche in video.", included:true},
+      {name:"Fiume Tembeling in barca (alba/tramonto)", addr:"Imbarco a Kuala Tahan", note:"Nebbia sull'acqua: utile un cavalletto leggero per lunghe esposizioni.", included:true},
+    ], extras:[]
+  },
+  { city:"Cameron Highlands",
+    viewpoints:[
+      {name:"Gunung Brinchang / Mossy Forest viewpoint", addr:"Strada per Gunung Brinchang, oltre Sam Poh Temple", note:"Alba sopra le valli di nebbia. Partenza dall'hotel 5:30-6:00, la nebbia sale in fretta dopo le 8-9.", included:false},
+      {name:"BOH Sungai Palas viewpoint", addr:"Dentro la piantagione BOH Sungai Palas", note:"Terrazza panoramica, buono anche a metà mattina.", included:true},
+      {name:"Bharat Tea Plantation", addr:"Vicino Ringlet", note:"Meno turistico del BOH, scorci più ampi sulle colline di tè.", included:false},
+    ], extras:[]
+  },
+  { city:"George Town, Penang",
+    viewpoints:[
+      {name:"The TOP Penang — Rainbow Skywalk", addr:"Komtar Tower, Penang Road, George Town", note:"Skywalk in vetro sospeso. Consigliato al tramonto per i colori del cielo.", included:false},
+      {name:"Penang Hill", addr:"Funicolare da Air Itam", note:"Vista ampia su tutta l'isola. Buono sia all'alba (poca foschia) che al tramonto.", included:true},
+      {name:"Armenian Street", addr:"George Town, centro storico", note:"Set fotografico a cielo aperto (murales). Andateci presto al mattino per gli scatti senza folla.", included:true},
+      {name:"Clan Jetties", addr:"Weld Quay, George Town", note:"Case su palafitte, belle di giorno e in silhouette al tramonto.", included:true},
+    ], extras:[]
+  },
+  { city:"Isole Perhentian",
+    viewpoints:[
+      {name:"Windmill Point (Kecil)", addr:"Sentiero da Long Beach, 30-45 min di trekking", note:"Il panorama più bello delle isole. Già proposto come opzione nel giorno 14 — andateci verso le 17:00-17:30 per il tramonto.", included:true},
+      {name:"Coral Bay", addr:"Perhentian Kecil", note:"Il tramonto \"da cartolina\", cene a bordo sabbia. Arrivare per le 18:30.", included:false},
+      {name:"Serenggeh Island", addr:"Raggiungibile in barca", note:"Meno battuta, acqua piatta come uno specchio al tramonto: ottima per video coi riflessi.", included:false},
+    ], extras:[]
+  },
+];
+
+/* ============================= RENDER: FOTO ============================= */
+function renderFoto(){
+  const el = document.getElementById('fotoList');
+  el.innerHTML = PHOTO.map(block => `
+    <div class="city-block">
+      <div class="city-block-title">📍 ${block.city}</div>
+      <div class="subgroup-label">Punti panoramici</div>
+      ${block.viewpoints.map(v => `
+        <div class="photo-card">
+          <div class="photo-card-top">
+            <div class="photo-card-name">${v.name}</div>
+            <div style="display:flex;flex-direction:column;gap:4px;align-items:flex-end;flex-shrink:0;">
+              ${v.local ? `<div class="status-badge local">spot locale</div>` : ''}
+              <div class="status-badge ${v.included ? 'in':'out'}">${v.included ? 'nel giro' : 'non incluso'}</div>
+            </div>
+          </div>
+          ${v.addr ? `<div class="photo-card-addr">${v.addr}</div>` : ''}
+          <div class="photo-card-note">${v.note}</div>
+        </div>
+      `).join('')}
+      ${block.extras.length ? `
+        <div class="subgroup-label">Da fare oltre il panorama</div>
+        ${block.extras.map(x => `
+          <div class="photo-card">
+            <div class="photo-card-top">
+              <div class="photo-card-name">${x.name}</div>
+              <div class="status-badge ${x.included ? 'in':'out'}">${x.included ? 'nel giro' : 'non incluso'}</div>
+            </div>
+            <div class="photo-card-note">${x.note}</div>
+          </div>
+        `).join('')}
+      ` : ''}
+    </div>
+  `).join('');
+}
+
 /* ============================= RENDER: NOTE ============================= */
 function renderNotes(){
   const el = document.getElementById('notesList');
@@ -858,6 +1026,7 @@ function render(){
 renderTransfers();
 renderCambio();
 renderNotes();
+renderFoto();
 loadCompleted();
 </script>
 </body>
