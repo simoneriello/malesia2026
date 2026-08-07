@@ -424,6 +424,16 @@
   }
   .link-btn svg{ width:13px; height:13px; }
 
+  .places-row{ display:flex; flex-wrap:wrap; gap:7px; margin-top:12px; }
+  .place-chip{
+    display:inline-flex; align-items:center; gap:5px;
+    font-family:var(--mono); font-size:11px; font-weight:600;
+    color:var(--accent-soft); background: rgba(227,167,46,0.12);
+    border:1px solid rgba(227,167,46,0.3);
+    padding:5px 10px; border-radius:999px; text-decoration:none;
+  }
+  .place-chip svg{ width:11px; height:11px; flex-shrink:0; }
+
   @media (min-width: 640px){
     h1.title{ font-size: 34px; }
     .today-grid{ grid-template-columns: 1fr; }
@@ -535,11 +545,13 @@ const DAYS = [
   {n:1, date:"2026-08-05", label:"Mer 5 ago (sera)", loc:"Kuala Lumpur", stop:"kl1",
    program:"Arrivo e trasferimento a Eaton Residence KLCC (Jalan Kia Peng). Dopo la sistemazione: passeggiata serale a KLCC Park, sotto casa — fontane illuminate (spettacolo di solito verso le 20:00-21:00) e vista delle Petronas Towers by night. Cena a due passi: Pavilion KL (10 min a piedi) o Jalan Alor (15-20 min a piedi / 5 min Grab).",
    exp:"Nessun tour organizzato il primo giorno: rientro morbido dal volo, muovendovi solo nel raggio dell'hotel.",
-   transport:"A piedi da Eaton Residence KLCC; Grab se preferite non camminare dopo il volo."},
+   transport:"A piedi da Eaton Residence KLCC; Grab se preferite non camminare dopo il volo.",
+   places:["Eaton Residence KLCC","KLCC Park","Pavilion Kuala Lumpur","Jalan Alor"]},
   {n:2, date:"2026-08-06", label:"Gio 6 ago", loc:"Kuala Lumpur", stop:"kl1",
    program:"8:00 partenza per Batu Caves (LRT diretta da KLCC, ~30 min): 272 gradini colorati, tempio hindu, statua dorata di Murugan. Rientro verso mezzogiorno, pranzo in zona KLCC/Bukit Bintang. Pomeriggio: Petronas Towers (skybridge + observation deck) e KLCC Park di giorno.",
    exp:"Prenotare i biglietti Petronas online con giorni d'anticipo. Batu Caves si visita in autonomia, 2-3 ore.",
    transport:"Grab diretto (20-30 min, ~RM 20-25 totali) consigliato per partire presto. In alternativa LRT fino a KL Sentral + cambio su KTM Komuter fino a Batu Caves (~45-60 min, ~RM 5-6 a testa) — non esiste una LRT diretta.",
+   places:["Batu Caves","Petronas Twin Towers","KLCC Park"],
    nearby:[
      {name:"Merdeka 118 observation deck", included:false, note:"~15 min da KLCC: vista alternativa, con le Petronas stesse nell'inquadratura."},
      {name:"KL Tower Sky Deck / SkyBar / Heli Lounge Bar", included:false, note:"Per la sera libera, se non siete troppo stanchi dopo Batu Caves."},
@@ -548,6 +560,7 @@ const DAYS = [
    program:"Mattina: Kampung Baru (villaggio malese tra i grattacieli), Pasar Seni, Chinatown/Petaling Street. Pomeriggio: Brickfields (Little India). Sera: tour street food a Jalan Alor.",
    exp:"'Local Street Food Night Tour' (~2.5h) o 'Sambal Streets Food Tour' (15+ assaggi) su GetYourGuide.",
    transport:"A piedi nel centro storico + Grab/LRT tra zone.",
+   places:["Kampung Baru Kuala Lumpur","Pasar Seni Central Market","Petaling Street Chinatown Kuala Lumpur","Brickfields Little India Kuala Lumpur","Jalan Alor"],
    nearby:[
      {name:"Merdeka Square + Masjid Negara + Islamic Arts Museum", included:false, note:"Proprio accanto a Pasar Seni/Chinatown: stesso giro a piedi della mattina."},
      {name:"Chow Kit Market", included:false, note:"Vicino a Kampung Baru, stessa zona in cui siete già la mattina."},
@@ -556,60 +569,73 @@ const DAYS = [
   {n:4, date:"2026-08-08", label:"Sab 8 ago", loc:"Taman Negara (gita di un giorno)", stop:"tn",
    program:"Pick-up 5:30-6:00 dall'hotel. Giornata al parco: trekking a Bukit Teresek, canopy walkway, rapid shooting in barca, villaggio Orang Asli, pranzo incluso. Rientro a KL in serata (18:00-20:00).",
    exp:"Tour di un giorno con guida naturalistica inclusa — dettagli nella scheda Trasferimenti.",
-   transport:"Minivan del tour operator (pick-up/drop-off in hotel)."},
+   transport:"Minivan del tour operator (pick-up/drop-off in hotel).",
+   places:["Taman Negara National Park Kuala Tahan","Bukit Teresek"]},
   {n:5, date:"2026-08-09", label:"Dom 9 ago", loc:"Kuala Lumpur", stop:"kl1",
    program:"Giornata di recupero dopo la lunga escursione. Mattina libera/shopping (Pavilion, Bukit Bintang, Suria KLCC). Sera: escursione alle lucciole di Kuala Selangor.",
    exp:"Tour serale 'Kuala Selangor Fireflies & Mangrove' — lucciole sincronizzate sulle mangrovie, ~1-1.5h da KL.",
    transport:"Grab/LRT in città; il tour lucciole include pick-up e drop-off.",
+   places:["Pavilion Kuala Lumpur","Bukit Bintang","Suria KLCC","Kuala Selangor Fireflies Park"],
    nearby:[
      {name:"Thean Hou Temple, KL Bird Park, Royal Selangor Visitor Centre", included:false, note:"Buone opzioni per la mattinata libera di oggi, se preferite qualcosa di più che shopping."},
    ]},
   {n:6, date:"2026-08-10", label:"Lun 10 ago", loc:"Kuala Lumpur → Cameron Highlands", stop:"ch",
    program:"Check-out e bus/transfer diretto verso Tanah Rata. Check-in Blue Jade Studios nel pomeriggio. Sera: passeggiata a Tanah Rata, prima cena 'di montagna'.",
-   exp:"", transport:"Bus diretto da TBS (4-5h) o transfer privato (~4h)."},
+   exp:"", transport:"Bus diretto da TBS (4-5h) o transfer privato (~4h).",
+   places:["Terminal Bersepadu Selatan TBS Kuala Lumpur","Blue Jade Studios Cameron Highlands","Tanah Rata"]},
   {n:7, date:"2026-08-11", label:"Mar 11 ago", loc:"Cameron Highlands", stop:"ch",
    program:"BOH Tea Plantation, Mossy Forest (meglio presto al mattino), fattoria di fragole. Pomeriggio facoltativo: Jungle Trail No. 1 verso Gunung Brinchang.",
    exp:"'Mossy Forest & Tea Plantation Tour' (mezza giornata, 4x4 Land Rover, hotel pick-up) su GetYourGuide.",
    transport:"Niente Grab: tour/jeep condivisi (RM 25-30) o taxi locali con prezzo concordato prima.",
+   places:["BOH Tea Plantation Sungai Palas","Mossy Forest Gunung Brinchang Cameron Highlands"],
    nearby:[
      {name:"Viewpoint dell'alba a Gunung Brinchang", included:false, note:"Il tour standard copre la Mossy Forest ma parte più tardi del sorgere del sole: per il vero scatto d'alba serve un transfer autonomo alle 5:30-6:00, da chiedere in hotel."},
      {name:"Bharat Tea Plantation", included:false, note:"Alternativa meno turistica al BOH, se avete tempo extra."},
    ]},
   {n:8, date:"2026-08-12", label:"Mer 12 ago", loc:"Cameron Highlands → George Town", stop:"pg",
    program:"Mattina: mercato di Tanah Rata o seconda passeggiata tra le piantagioni. Check-out e bus verso Sungai Nibong. Arrivo a George Town in serata, check-in Citadines Connect. Cena a Chulia Street.",
-   exp:"", transport:"Bus diretto (4-5h) + Grab/bus locale fino al centro."},
+   exp:"", transport:"Bus diretto (4-5h) + Grab/bus locale fino al centro.",
+   places:["Tanah Rata Market","Sungai Nibong Bus Terminal Penang","Citadines Connect Georgetown Penang","Chulia Street Penang"]},
   {n:9, date:"2026-08-13", label:"Gio 13 ago", loc:"George Town, Penang", stop:"pg",
    program:"Street art tour a piedi, Fort Cornwallis, Kapitan Keling Mosque, Goddess of Mercy Temple. Sera: cena a Chew Jetty tra le case su palafitte della comunità Hokkien.",
    exp:"Giro in trishaw (RM 40/30min, RM 80/1h) o tour 'Heritage Highlights + Trishaw Ride' (~3h) su GetYourGuide.",
    transport:"A piedi nel centro storico.",
+   places:["Armenian Street George Town","Fort Cornwallis Penang","Kapitan Keling Mosque Penang","Goddess of Mercy Temple Kuan Yin Teng Penang","Chew Jetty Penang"],
    nearby:[
      {name:"The TOP Penang — Rainbow Skywalk", included:false, note:"Al Komtar Tower, zona centrale di George Town: si può inserire nel giro di oggi o di domani, magari al tramonto."},
    ]},
   {n:10, date:"2026-08-14", label:"Ven 14 ago", loc:"George Town, Penang", stop:"pg",
    program:"Mattina: Clan Jetties con calma, Little India. Pomeriggio libero: Penang Hill (funicolare) o Batu Ferringhi per il mare.",
    exp:"'Heritage Walking Tour with Street Food Tasting' su GetYourGuide.",
-   transport:"A piedi + bus gratuito CAT; Grab per spostamenti più lunghi."},
+   transport:"A piedi + bus gratuito CAT; Grab per spostamenti più lunghi.",
+   places:["Clan Jetties Penang","Little India Penang","Penang Hill","Batu Ferringhi"]},
   {n:11, date:"2026-08-15", label:"Sab 15 ago", loc:"Penang → Isole Perhentian", stop:"per",
    program:"Volo mattutino Penang→Kota Bharu, taxi/Grab a Kuala Besut (~1h), barca veloce alle Perhentian (30-45 min). Check-in Marriott Perhentian, pomeriggio in spiaggia.",
-   exp:"", transport:"Volo + taxi + barca (vedi Trasferimenti)."},
+   exp:"", transport:"Volo + taxi + barca (vedi Trasferimenti).",
+   places:["Penang International Airport","Kuala Besut Jetty","Marriott Perhentian Island Resort"]},
   {n:12, date:"2026-08-16", label:"Dom 16 ago", loc:"Isole Perhentian", stop:"per",
    program:"Tour di snorkeling ai tre spot classici: Turtle Point, Shark Point, Coral Garden.",
    exp:"Organizzabile in resort o su una delle spiagge, mezza giornata in barca condivisa.",
-   transport:"Barca del tour."},
+   transport:"Barca del tour.",
+   places:["Turtle Point Perhentian","Shark Point Perhentian","Coral Garden Perhentian"]},
   {n:13, date:"2026-08-17", label:"Lun 17 ago", loc:"Isole Perhentian", stop:"per",
    program:"Per chi non ha mai fatto immersioni: battesimo subacqueo (discovery dive) con centro PADI locale. In alternativa: kayak, esplorazione di Perhentian Besar via water-taxi.",
-   exp:"Centri PADI locali sulla spiaggia (es. Quiver Divers).", transport:"Water-taxi tra isole."},
+   exp:"Centri PADI locali sulla spiaggia (es. Quiver Divers).", transport:"Water-taxi tra isole.",
+   places:["Perhentian Besar Island"]},
   {n:14, date:"2026-08-18", label:"Mar 18 ago", loc:"Isole Perhentian", stop:"per",
    program:"Giornata slow: spiaggia, eventuale seconda uscita snorkeling, o trekking leggero a Windmill Point per il tramonto.",
-   exp:"", transport:"A piedi + water-taxi."},
+   exp:"", transport:"A piedi + water-taxi.",
+   places:["Windmill Point Perhentian Kecil"]},
   {n:15, date:"2026-08-19", label:"Mer 19 ago", loc:"Isole Perhentian", stop:"per",
    program:"Ultimo giorno libero: nessun programma fisso, solo la spiaggia che preferite quel giorno.",
    exp:"", transport:"A piedi + water-taxi."},
   {n:16, date:"2026-08-20", label:"Gio 20 ago", loc:"Isole Perhentian → Kuala Lumpur", stop:"kl2",
    program:"Barca mattutina a Kuala Besut, taxi a Kota Bharu, volo pomeridiano per KL. Check-in Eaton Residence KLCC. Sera libera per l'ultima cena di gruppo.",
-   exp:"", transport:"Barca + taxi + volo."},
+   exp:"", transport:"Barca + taxi + volo.",
+   places:["Kuala Besut Jetty","Sultan Ismail Petra Airport Kota Bharu","Eaton Residence KLCC"]},
   {n:17, date:"2026-08-21", label:"Ven 21 ago", loc:"Kuala Lumpur → Milano", stop:"kl2",
-   program:"Volo di rientro.", exp:"", transport:"Grab/LRT dall'hotel all'aeroporto."},
+   program:"Volo di rientro.", exp:"", transport:"Grab/LRT dall'hotel all'aeroporto.",
+   places:["KLIA Kuala Lumpur International Airport"]},
 ];
 
 const STOPS = [
@@ -744,6 +770,18 @@ function jumpToStop(stopId){
 }
 
 /* ============================= RENDER: OGGI ============================= */
+function renderPlacesRow(places, cityHint){
+  if(!places || !places.length) return '';
+  return `<div class="places-row">
+    ${places.map(p => `
+      <a class="place-chip" href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(p + ', Malaysia')}" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 21s7-6.5 7-12a7 7 0 10-14 0c0 5.5 7 12 7 12z"/><circle cx="12" cy="9" r="2.5"/></svg>
+        ${p}
+      </a>
+    `).join('')}
+  </div>`;
+}
+
 function renderNearbyBlock(nearby, compact){
   if(!nearby || !nearby.length) return '';
   const label = compact ? 'today-item-label' : 'body-label';
@@ -785,6 +823,7 @@ function renderOggi(){
         <div>
           <div class="today-item-label">Programma</div>
           <div class="today-item-text">${t.program}</div>
+          ${renderPlacesRow(t.places)}
         </div>
         ${t.exp ? `<div><div class="today-item-label">Esperienza consigliata</div><div class="today-item-text">${t.exp}</div></div>` : ''}
         <div>
@@ -824,6 +863,7 @@ function renderDays(){
         <div class="body-block">
           <div class="body-label">Programma</div>
           <div class="body-text">${d.program}</div>
+          ${renderPlacesRow(d.places)}
         </div>
         ${d.exp ? `<div class="body-block"><div class="body-label">Esperienza consigliata</div><div class="body-text">${d.exp}</div></div>` : ''}
         <div class="body-block">
