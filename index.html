@@ -37,8 +37,8 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--ink);font
 .progress-label{font-size:12px;color:var(--muted);margin-top:8px;text-align:center}
 
 #home-screen{flex-direction:column;height:100vh;overflow-y:auto}
-.home-content{max-width:900px;margin:0 auto;padding:28px 24px}
-.channel-badge{font-size:10px;font-weight:700;letter-spacing:0.5px;text-transform:uppercase;padding:3px 10px;border-radius:20px;color:white}
+.home-content{width:100%;max-width:1600px;margin:0 auto;padding:2rem clamp(20px,4vw,64px) 3rem}
+.channel-badge{font-size:0.75em;font-weight:500;color:rgba(255,255,255,0.85);text-transform:none;letter-spacing:normal;margin-left:2px}
 .home-total-card{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:20px 22px;margin-bottom:16px}
 .home-total-label{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px}
 .home-total-value{font-family:'Cormorant Garamond',serif;font-size:2rem;font-weight:600;color:var(--ink)}
@@ -60,7 +60,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--ink);font
 #app-screen{display:none;flex-direction:column;height:100vh}
 .topbar{background:var(--wine);color:white;padding:12px 24px;display:flex;justify-content:space-between;align-items:center}
 .brand-top{font-family:'Cormorant Garamond',serif;font-size:1.3rem;font-weight:600}
-.brand-top span{color:var(--gold);font-size:0.7em;letter-spacing:2px;margin-left:8px}
+.brand-top .brand-tagline{color:var(--gold);font-size:0.7em;letter-spacing:2px;margin-left:8px}
 .btn-reset{background:rgba(255,255,255,0.15);color:white;border:1px solid rgba(255,255,255,0.3);padding:6px 14px;border-radius:6px;cursor:pointer;font-size:12px;font-weight:600;font-family:'DM Sans',sans-serif}
 .btn-reset:hover{background:rgba(255,255,255,0.25)}
 
@@ -264,7 +264,7 @@ tr.tot-row td{background:#faf7f7;font-weight:700;border-top:2px solid var(--wine
 
 <div id="home-screen" style="display:none">
   <div class="topbar">
-    <div class="brand-top">Mosnel<span>SALES INTELLIGENCE</span></div>
+    <div class="brand-top">Mosnel<span class="brand-tagline">SALES INTELLIGENCE</span></div>
     <button class="btn-reset" onclick="resetApp()">Nuovo file</button>
   </div>
   <div id="home-content" class="home-content"></div>
@@ -273,7 +273,7 @@ tr.tot-row td{background:#faf7f7;font-weight:700;border-top:2px solid var(--wine
 <div id="app-screen">
   <div class="topbar">
     <div class="brand-top" style="display:flex;align-items:center;gap:10px">
-      Mosnel<span>SALES INTELLIGENCE</span>
+      Mosnel<span class="brand-tagline">SALES INTELLIGENCE</span>
       <span id="channel-badge" class="channel-badge"></span>
     </div>
     <div style="display:flex;gap:8px">
@@ -379,8 +379,7 @@ function setChannel(canale) {
   document.getElementById('app-screen').style.display = 'flex';
   var info = CANALE_INFO[canale];
   var badge = document.getElementById('channel-badge');
-  badge.textContent = info.label;
-  badge.style.background = info.color;
+  badge.textContent = '· ' + info.label;
   document.documentElement.style.setProperty('--channel-color', info.color);
   lastReport = null; fvStack = [];
   document.getElementById('placeholder').style.display = 'block';
@@ -755,9 +754,11 @@ function classificaCanale(agente, stato, categoria) {
   var agU = String(agente || '').toUpperCase();
   if (agente === 'AUTOCONSUMO' || categoria === 'AUTOCONSUMO') return 'AUTOCONSUMO';
   if (agU.indexOf('A.C. MARKETING') !== -1 || agU.indexOf('AC MARKETING') !== -1) return 'ESTERO';
+  // PV e Wine Club sono sempre Negozio, anche se la riga riporta uno Stato estero
+  // (es. accrediti/resi verso clienti esteri gestiti dal punto vendita)
+  if (agente === 'PV' || agente === 'WINE CLUB' || categoria === 'WINE CLUB') return 'NEGOZIO';
   if (agente === 'VUOTO') return 'VUOTO';
   if (!STATI_ITALIA_LIKE[stato]) return 'ESTERO';
-  if (agente === 'PV' || agente === 'WINE CLUB' || categoria === 'WINE CLUB') return 'NEGOZIO';
   return 'HORECA';
 }
 
@@ -901,7 +902,8 @@ function fillViste() {
   for (var i = 0; i < D.length; i++) if (D[i].agente) agents[D[i].agente] = true;
   var arr = Object.keys(agents).sort();
   var sel = document.getElementById('vista');
-  sel.innerHTML = '<option value="ITALIA">Italia Totale</option>';
+  var totaleLabel = {HORECA: 'Horeca Italia Totale', ESTERO: 'Estero Totale', NEGOZIO: 'Negozio Totale'}[CURRENT_CHANNEL] || 'Totale';
+  sel.innerHTML = '<option value="ITALIA">' + totaleLabel + '</option>';
   for (var i = 0; i < arr.length; i++) {
     var opt = document.createElement('option');
     opt.value = arr[i];
