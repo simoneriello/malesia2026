@@ -42,7 +42,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--ink);font
 .channel-badge{font-size:1em;font-weight:600;color:var(--wine-dark);text-transform:none;letter-spacing:normal;margin-left:2px}
 .home-total-card{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:20px 22px;margin-bottom:16px}
 .home-total-label{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px}
-.home-total-value{font-family:'Cormorant Garamond',serif;font-size:2rem;font-weight:600;color:var(--ink)}
+.home-total-value{font-family:'DM Sans',sans-serif;font-size:2.1rem;font-weight:600;color:var(--ink)}
 .home-total-value span{font-family:'DM Sans',sans-serif;font-size:14px;font-weight:600;margin-left:8px}
 .home-bar{display:flex;height:10px;border-radius:6px;overflow:hidden;margin-top:14px}
 .home-legend{display:flex;flex-wrap:wrap;margin-top:8px;font-size:12px;color:var(--muted)}
@@ -155,7 +155,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--ink);font
 .ref-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px}
 .ref-card{background:#faf7f7;border:1px solid var(--border);border-radius:8px;padding:12px}
 .ref-name{font-size:11px;font-weight:700;text-transform:uppercase;color:var(--muted);margin-bottom:6px;letter-spacing:0.5px}
-.ref-val{font-family:'Cormorant Garamond',serif;font-size:1.3rem;font-weight:600;color:var(--wine);line-height:1.1}
+.ref-val{font-family:'DM Sans',sans-serif;font-size:1.2rem;font-weight:600;color:var(--wine);line-height:1.1}
 .ref-meta{font-size:11px;color:var(--muted);margin-top:4px}
 
 .table-wrap{border:1px solid var(--border);border-radius:8px;overflow:hidden}
@@ -391,6 +391,13 @@ function setChannel(canale) {
   clearSearch();
   fillViste();
   updateDataInfoBanner();
+
+  // Genera subito il report YTD aggregato del canale, senza attendere il click manuale
+  document.getElementById('vista').value = 'ITALIA';
+  document.getElementById('anno').value = '2026';
+  document.getElementById('periodo').value = 'YTD';
+  togglePeriodo();
+  generaReport();
 }
 
 // Torna alla dashboard madre
@@ -1195,6 +1202,11 @@ function calcolaTrendMensile(dati, anno, periodo) {
   return trend;
 }
 
+function vistaLabel(vista) {
+  if (vista !== 'ITALIA') return vista;
+  return {HORECA: 'Horeca Italia Totale', ESTERO: 'Estero Totale', NEGOZIO: 'Negozio Totale'}[CURRENT_CHANNEL] || 'Totale';
+}
+
 function generaReport() {
   var vista = document.getElementById('vista').value;
   var anno = parseInt(document.getElementById('anno').value);
@@ -1401,7 +1413,7 @@ function renderReport() {
   var dPM = r.d25.pm > 0 ? ((r.d26.pm - r.d25.pm) / r.d25.pm) * 100 : 0;
   
   var html = '';
-  html += '<div class="report-header"><div><h1>' + escapeHTML(r.vista) + '</h1><p>' + r.anno + ' vs ' + r.annoP + ' · ' + escapeHTML(r.periodo.label) + '</p></div>';
+  html += '<div class="report-header"><div><h1>' + escapeHTML(vistaLabel(r.vista)) + '</h1><p>' + r.anno + ' vs ' + r.annoP + ' · ' + escapeHTML(r.periodo.label) + '</p></div>';
   html += '<div class="report-actions"><button onclick="exportReportExcel()">Excel</button><button onclick="exportReportPdf()">PDF</button><button onclick="exportMultiPeriodoPdf()" title="Esporta un PDF con due sezioni: periodo selezionato + YTD">PDF Multi-periodo</button></div></div>';
   
   // KPI principali: 4 card simmetriche — Fatturato · Bottiglie · Prezzo Medio · Ordini
@@ -1850,19 +1862,19 @@ function buildDonutReferenze(r) {
     svg += '<circle cx="' + p4x + '" cy="' + p4y + '" r="2.2" fill="' + l.color + '"/>';
     // Testo nome
     svg += '<text x="' + textX + '" y="' + (l.labelY - 1) + '" ';
-    svg += 'text-anchor="' + textAnchor + '" font-size="10" font-weight="600" font-family="Arial, sans-serif" fill="#333">';
+    svg += 'text-anchor="' + textAnchor + '" font-size="10" font-weight="600" font-family="DM Sans, sans-serif" fill="#333">';
     svg += escapeHTML(l.name);
     svg += '</text>';
     // Testo percentuale (sotto, più piccolo, colorato come la fetta)
     svg += '<text x="' + textX + '" y="' + (l.labelY + 10) + '" ';
-    svg += 'text-anchor="' + textAnchor + '" font-size="9" font-weight="700" font-family="Arial, sans-serif" fill="' + l.color + '">';
+    svg += 'text-anchor="' + textAnchor + '" font-size="9" font-weight="700" font-family="DM Sans, sans-serif" fill="' + l.color + '">';
     svg += l.pct.toFixed(1).replace('.', ',') + '%';
     svg += '</text>';
   }
   
   // Totale al centro del donut
-  svg += '<text x="' + cx + '" y="' + (cy - 4) + '" text-anchor="middle" font-size="9" fill="#7a6b6c" font-weight="600" font-family="Arial, sans-serif" letter-spacing="1">BOTTIGLIE ' + r.anno + '</text>';
-  svg += '<text x="' + cx + '" y="' + (cy + 12) + '" text-anchor="middle" font-size="18" fill="#722F37" font-weight="700" font-family="Arial, sans-serif">' + NUM(totalForDonut) + '</text>';
+  svg += '<text x="' + cx + '" y="' + (cy - 4) + '" text-anchor="middle" font-size="9" fill="#7a6b6c" font-weight="600" font-family="DM Sans, sans-serif" letter-spacing="1">BOTTIGLIE ' + r.anno + '</text>';
+  svg += '<text x="' + cx + '" y="' + (cy + 12) + '" text-anchor="middle" font-size="18" fill="#722F37" font-weight="700" font-family="DM Sans, sans-serif">' + NUM(totalForDonut) + '</text>';
   
   svg += '</svg>';
   
@@ -2049,7 +2061,7 @@ function buildChart(t26, t25, anno, annoP, periodo) {
   var ch = h - padT - padB;
   var step = nMesi > 1 ? cw / (nMesi - 1) : cw / 2;
   
-  var svg = '<svg viewBox="0 0 ' + w + ' ' + h + '" style="width:100%;height:auto;display:block" font-family="Arial, sans-serif">';
+  var svg = '<svg viewBox="0 0 ' + w + ' ' + h + '" style="width:100%;height:auto;display:block" font-family="DM Sans, sans-serif">';
   
   // Gridlines orizzontali
   for (var i = 0; i <= 4; i++) {
@@ -2555,18 +2567,18 @@ function buildDonutReferenzeCliente(refs26, refs25, totalBtl, anno, annoP) {
     svg += 'fill="none" stroke="' + l.color + '" stroke-width="1.2" opacity="0.75"/>';
     svg += '<circle cx="' + p4x + '" cy="' + p4y + '" r="2.2" fill="' + l.color + '"/>';
     svg += '<text x="' + textX + '" y="' + (l.labelY - 1) + '" ';
-    svg += 'text-anchor="' + textAnchor + '" font-size="10" font-weight="600" font-family="Arial, sans-serif" fill="#333">';
+    svg += 'text-anchor="' + textAnchor + '" font-size="10" font-weight="600" font-family="DM Sans, sans-serif" fill="#333">';
     svg += escapeHTML(l.name);
     svg += '</text>';
     svg += '<text x="' + textX + '" y="' + (l.labelY + 10) + '" ';
-    svg += 'text-anchor="' + textAnchor + '" font-size="9" font-weight="700" font-family="Arial, sans-serif" fill="' + l.color + '">';
+    svg += 'text-anchor="' + textAnchor + '" font-size="9" font-weight="700" font-family="DM Sans, sans-serif" fill="' + l.color + '">';
     svg += l.pct.toFixed(1).replace('.', ',') + '%';
     svg += '</text>';
   }
   
   // Totale al centro
-  svg += '<text x="' + cx + '" y="' + (cy - 4) + '" text-anchor="middle" font-size="9" fill="#7a6b6c" font-weight="600" font-family="Arial, sans-serif" letter-spacing="1">BOTTIGLIE ' + anno + '</text>';
-  svg += '<text x="' + cx + '" y="' + (cy + 12) + '" text-anchor="middle" font-size="18" fill="#722F37" font-weight="700" font-family="Arial, sans-serif">' + NUM(totalForDonut) + '</text>';
+  svg += '<text x="' + cx + '" y="' + (cy - 4) + '" text-anchor="middle" font-size="9" fill="#7a6b6c" font-weight="600" font-family="DM Sans, sans-serif" letter-spacing="1">BOTTIGLIE ' + anno + '</text>';
+  svg += '<text x="' + cx + '" y="' + (cy + 12) + '" text-anchor="middle" font-size="18" fill="#722F37" font-weight="700" font-family="DM Sans, sans-serif">' + NUM(totalForDonut) + '</text>';
   
   svg += '</svg>';
   
@@ -3254,7 +3266,7 @@ function exportReportExcel() {
   var wb = XLSX.utils.book_new();
   
   // KPI sheet
-  var kpiRows = [['Mosnel - ' + r.vista], ['Periodo: ' + r.periodo.label], [],
+  var kpiRows = [['Mosnel - ' + vistaLabel(r.vista)], ['Periodo: ' + r.periodo.label], [],
     ['', r.anno, r.annoP, 'Var €', 'Var %'],
     ['Fatturato', r.d26.fatturato, r.d25.fatturato, r.d26.fatturato - r.d25.fatturato, (r.d25.fatturato>0?((r.d26.fatturato-r.d25.fatturato)/r.d25.fatturato)*100:0).toFixed(2)+'%'],
     ['Bottiglie', r.d26.bottiglie, r.d25.bottiglie, r.d26.bottiglie - r.d25.bottiglie, (r.d25.bottiglie>0?((r.d26.bottiglie-r.d25.bottiglie)/r.d25.bottiglie)*100:0).toFixed(2)+'%'],
@@ -3287,7 +3299,7 @@ function exportReportExcel() {
   if (r.calo.length) XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(makeRows(r.calo)), 'In Calo');
   if (r.assenti.length) XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(makeRows(r.assenti)), 'Non attivi');
   
-  saveXlsx(wb, 'Mosnel_Report_' + r.vista + '.xlsx');
+  saveXlsx(wb, 'Mosnel_Report_' + vistaLabel(r.vista).replace(/ /g,'_') + '.xlsx');
 }
 
 // Converte un elemento SVG in PNG dataURL (Promise)
